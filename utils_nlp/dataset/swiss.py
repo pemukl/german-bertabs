@@ -18,7 +18,7 @@ import os
 import regex as re
 from torchtext.utils import extract_archive
 import pandas
-
+from sklearn.model_selection import train_test_split
 
 from utils_nlp.dataset.url_utils import (
     maybe_download,
@@ -51,11 +51,13 @@ def SwissSummarizationDataset(*args, **kwargs):
         FILE_NAME = "data_train.csv"
         maybe_download(urls[0], FILE_NAME, local_cache_path)
         dataset_path = os.path.join(local_cache_path, FILE_NAME)
+        
         train = pandas.read_csv(dataset_path).values.tolist()
-        train_source = [item[0] for item in train[0:top_n]]
-        train_summary = [item[1] for item in train[0:top_n]]
-        test_source = [item[0] for item in train[-(top_n+1):-1]]
-        test_summary = [item[1] for item in train[-(top_n+1):-1]]
+        if(top_n!=-1):
+            train = train[0:top_n]
+        source = [item[0] for item in train]
+        summary = [item[1] for item in train]
+        train_source,test_source,train_summary,test_summary=train_test_split(source,summary,train_size=0.8,test_size=0.2,random_state=123)
 
         return (
             SummarizationDataset(
