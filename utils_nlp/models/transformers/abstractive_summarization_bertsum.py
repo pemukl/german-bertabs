@@ -29,7 +29,7 @@ from utils_nlp.models.transformers.bertsum.model_builder import AbsSummarizer
 from utils_nlp.models.transformers.bertsum.predictor import build_predictor
 from utils_nlp.models.transformers.common import Transformer
 
-MODEL_CLASS = {"bert-base-uncased": BertModel}
+MODEL_CLASS = {"bert-base-uncased": BertModel, "bert-base-german-cased": BertModel}
 
 logger = logging.getLogger(__name__)
 
@@ -137,10 +137,10 @@ class BertSumAbsProcessor:
         )
 
         self.symbols = {
-            "BOS": self.tokenizer.vocab["[unused0]"],
-            "EOS": self.tokenizer.vocab["[unused1]"],
+            "BOS": self.tokenizer.vocab["[unused1]"],
+            "EOS": self.tokenizer.vocab["[unused2]"],
             "PAD": self.tokenizer.vocab["[PAD]"],
-            "EOQ": self.tokenizer.vocab["[unused2]"],
+            "EOQ": self.tokenizer.vocab["[unused3]"],
         }
 
         self.sep_token = "[SEP]"
