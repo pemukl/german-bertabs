@@ -346,7 +346,7 @@ class BertSumAbsProcessor:
             return story_token_ids, None
 
 
-def validate(summarizer, validate_dataset):
+def validate(summarizer, validate_dataset, language='en'):
     """ validation function to be used optionally in fine tuning.
 
     Args:
@@ -372,7 +372,7 @@ def validate(summarizer, validate_dataset):
     print("reference is {}".format(reference_summaries[0]))
 
     rouge_score = compute_rouge_python(
-        cand=generated_summaries, ref=reference_summaries
+        cand=generated_summaries, ref=reference_summaries, language=language
     )
     return "rouge score: {}".format(rouge_score)
 
@@ -706,7 +706,7 @@ class BertSumAbs(Transformer):
             )
 
         if fp16:
-            self.model = self.model.half()
+            self.model = self.model
 
         self.model = move_model_to_device(self.model, device)
         self.model.eval()
