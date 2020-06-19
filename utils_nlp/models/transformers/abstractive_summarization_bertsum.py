@@ -358,7 +358,7 @@ def validate(summarizer, validate_dataset):
             the validation dataset.
 
     """
-    TOP_N = 8
+    TOP_N = 32
     shortened_dataset = validate_dataset.shorten(TOP_N)
     reference_summaries = [
         " ".join(t).rstrip("\n") for t in shortened_dataset.get_target()

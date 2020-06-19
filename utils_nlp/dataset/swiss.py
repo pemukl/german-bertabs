@@ -39,26 +39,60 @@ def join(sentences):
     return " ".join(sentences)
 
 
-def SwissSummarizationDataset(*args, **kwargs):
+def SwissSummarizationDataset(top_n=-1, validation=False):
     """Load the CNN/Daily Mail dataset preprocessed by harvardnlp group."""
 
     URLS = ["https://drive.switch.ch/index.php/s/YoyW9S8yml7wVhN/download?path=%2F&files=data_train.csv",
             "https://drive.switch.ch/index.php/s/YoyW9S8yml7wVhN/download?path=%2F&files=data_test.csv",]
+    LOCAL_CACHE_PATH = '.data'
 
-    def _setup_datasets(
-        urls, top_n=-1, local_cache_path=".data", prepare_extractive=True
-    ):
-        FILE_NAME = "data_train.csv"
-        maybe_download(urls[0], FILE_NAME, local_cache_path)
-        dataset_path = os.path.join(local_cache_path, FILE_NAME)
-        
-        train = pandas.read_csv(dataset_path).values.tolist()
-        if(top_n!=-1):
-            train = train[0:top_n]
-        source = [item[0] for item in train]
-        summary = [item[1] for item in train]
-        train_source,test_source,train_summary,test_summary=train_test_split(source,summary,train_size=0.8,test_size=0.2,random_state=123)
-
+    FILE_NAME = "data_train.csv"
+    maybe_download(URLS[0], FILE_NAME, LOCAL_CACHE_PATH)
+    dataset_path = os.path.join(LOCAL_CACHE_PATH, FILE_NAME)
+    
+    train = pandas.read_csv(dataset_path).values.tolist()
+    if(top_n!=-1):
+        train = train[0:top_n]
+    source = [item[0] for item in train]
+    summary = [item[1] for item in train]
+    train_source,test_source,train_summary,test_summary=train_test_split(source,summary,train_size=0.95,test_size=0.05,random_state=123)
+    if validation:
+        train_source, validation_source, train_summary, validation_summary = train_test_split(
+            train_source, train_summary, train_size=0.9, test_size=0.1, random_state=123
+        )
+        return (
+            SummarizationDataset(
+                source_file=None,
+                source=train_source,
+                target=train_summary,
+                source_preprocessing=[tokenize.sent_tokenize],
+                target_preprocessing=[
+                    _target_sentence_tokenization,
+                ],
+                top_n=top_n,
+            ),
+            SummarizationDataset(
+                source_file=None,
+                source=validation_source,
+                target=validation_summary,
+                source_preprocessing=[tokenize.sent_tokenize],
+                target_preprocessing=[
+                    _target_sentence_tokenization,
+                ],
+                top_n=top_n,
+            ),
+            SummarizationDataset(
+                source_file=None,
+                source=test_source,
+                target=test_summary,
+                source_preprocessing=[tokenize.sent_tokenize],
+                target_preprocessing=[
+                    _target_sentence_tokenization,
+                ],
+                top_n=top_n,
+            ),
+        )
+    else:
         return (
             SummarizationDataset(
                 source_file=None,
@@ -81,4 +115,4 @@ def SwissSummarizationDataset(*args, **kwargs):
                 top_n=top_n,
             ),
         )
-    return _setup_datasets(*((URLS,) + args), **kwargs)
+
