@@ -127,7 +127,8 @@ def compute_rouge_python(cand, ref, is_input_files=False, language="en"):
             apply_avg=True,
             language=language,
         )
+        
 
-    scores = evaluator.get_scores(candidates, [[it] for it in references])
+    scores = evaluator.get_scores(candidates, references)
 
     return scores

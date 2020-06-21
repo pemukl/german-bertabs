@@ -706,7 +706,7 @@ class BertSumAbs(Transformer):
             )
 
         if fp16:
-            self.model = self.model.half()
+            self.model = self.model
 
         self.model = move_model_to_device(self.model, device)
         self.model.eval()
