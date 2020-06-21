@@ -791,8 +791,8 @@ class BertSumAbs(Transformer):
             generated_summaries.extend(summaries)
 
         # release GPU memories
-        self.model.cpu()
-        torch.cuda.empty_cache()
+        # self.model.cpu()
+        # torch.cuda.empty_cache()
 
         return generated_summaries
 

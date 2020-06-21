@@ -1,0 +1,15 @@
+tqdm
+transformers
+pyrouge
+rouge
+indicnlp
+indic-nlp-library
+tensorboardX
+jsonlines
+nltk
+scrapbook
+nteract-scrapbook
+torchtext
+scikit-learn
+googledrivedownloader
+ipywidgets
