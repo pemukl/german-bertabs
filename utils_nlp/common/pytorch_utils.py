@@ -41,7 +41,7 @@ def move_model_to_device(model, device):
     return model.to(device)
 
 
-def parallelize_model(model, device, num_gpus=None, gpu_ids=None, local_rank=-1):
+def parallelize_model(model, device, num_gpus=None, gpu_ids=None, local_rank=-1, apex=None):
     """Moves a model to the specified device (cpu or gpu/s)
        and implements data parallelism when multiple gpus are specified.
     Args:
@@ -97,6 +97,8 @@ def parallelize_model(model, device, num_gpus=None, gpu_ids=None, local_rank=-1)
                 gpu_ids = list(set(list(range(num_cuda_devices))).intersection(gpu_ids))
             if len(gpu_ids) > 0:
                 model = torch.nn.DataParallel(model_module, device_ids=gpu_ids)
+                if apex:
+                    model.forward = lambda *args, old_fwd = model.forward, input_caster = lambda tensor: tensor.to(apex.amp._amp_state.opt_properties.options['cast_model_type']), output_caster = lambda tensor: tensor.to(apex.amp._amp_state.opt_properties.options['cast_model_outputs'] if apex.amp._amp_state.opt_properties.options.get('cast_model_outputs') is not None else torch.float32), **kwargs: apex.amp._initialize.applier(old_fwd(*apex.amp._initialize.applier(args, input_caster), **apex.amp._initialize.applier(kwargs, input_caster)), output_caster)
     return model
 
 

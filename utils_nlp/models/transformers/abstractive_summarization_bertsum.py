@@ -598,7 +598,9 @@ class BertSumAbs(Transformer):
             num_gpus=num_gpus,
             gpu_ids=gpu_ids,
             local_rank=local_rank,
+            apex=self.amp
         )
+
 
         if local_rank == -1:
             sampler = RandomSampler(train_dataset)
