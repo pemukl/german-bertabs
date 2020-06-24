@@ -10,6 +10,9 @@ import plotly.offline as pyo
 from plotly.subplots import make_subplots
 from statistics import mean 
 from torch import Tensor
+from utils_nlp.dataset.url_utils import (
+    maybe_download,
+)
 
 class Workbench:
     test_source = []
@@ -17,8 +20,9 @@ class Workbench:
     scores = []
     results = {}
 
-    def __init__(self) -> None:
-        pd = pandas.read_csv("/home/marc/Nextcloud/Uni/20SoSe/DI-Lab/Data/swisstext/data_train.csv")
+    def __init__(self,path) -> None:
+        maybe_download("https://drive.switch.ch/index.php/s/YoyW9S8yml7wVhN/download?path=%2F&files=data_train.csv", "data_train.csv", path)
+        pd = pandas.read_csv(path+"data_train.csv")
         train = pd.values.tolist()
         source = [item[0] for item in train]
         summary = [item[1] for item in train]
