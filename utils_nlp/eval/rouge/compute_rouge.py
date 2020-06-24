@@ -118,9 +118,7 @@ def compute_rouge_python(cand, ref, is_input_files=False, language="en"):
     assert len(candidates) == len(references)
 
     if language == "en":
-        evaluator = Rouge(
-            metrics=["rouge-n", "rouge-l"], max_n=2, limit_length=False, apply_avg=True
-        )
+        evaluator = Rouge()
     else:
         evaluator = RougeExt(
             metrics=["rouge-n", "rouge-l"],
@@ -129,7 +127,8 @@ def compute_rouge_python(cand, ref, is_input_files=False, language="en"):
             apply_avg=True,
             language=language,
         )
+        
 
-    scores = evaluator.get_scores(candidates, [[it] for it in references])
+    scores = evaluator.get_scores(candidates, references)
 
     return scores
