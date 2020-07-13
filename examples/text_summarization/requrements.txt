@@ -1,0 +1,14 @@
+tqdm
+transformers
+pyrouge
+rouge
+pip install indicnlp
+indic-nlp-library
+tensorboardX
+jsonlines
+nltk
+scrapbook
+nteract-scrapbook
+torchtext
+scikit-learn
+googledrivedownloader

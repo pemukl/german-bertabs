@@ -41,7 +41,7 @@ def move_model_to_device(model, device):
     return model.to(device)
 
 
-def parallelize_model(model, device, num_gpus=None, gpu_ids=None, local_rank=-1):
+def parallelize_model(model, device, num_gpus=None, gpu_ids=None, local_rank=-1, apex=None):
     """Moves a model to the specified device (cpu or gpu/s)
        and implements data parallelism when multiple gpus are specified.
     Args:

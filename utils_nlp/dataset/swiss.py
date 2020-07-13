@@ -67,7 +67,7 @@ def SwissSummarizationDataset(top_n=-1, validation=False):
                 target=train_summary,
                 source_preprocessing=[tokenize.sent_tokenize],
                 target_preprocessing=[
-                    _target_sentence_tokenization,
+                    tokenize.sent_tokenize,
                 ],
                 top_n=top_n,
             ),
@@ -77,7 +77,7 @@ def SwissSummarizationDataset(top_n=-1, validation=False):
                 target=validation_summary,
                 source_preprocessing=[tokenize.sent_tokenize],
                 target_preprocessing=[
-                    _target_sentence_tokenization,
+                    tokenize.sent_tokenize,
                 ],
                 top_n=top_n,
             ),
@@ -87,7 +87,7 @@ def SwissSummarizationDataset(top_n=-1, validation=False):
                 target=test_summary,
                 source_preprocessing=[tokenize.sent_tokenize],
                 target_preprocessing=[
-                    _target_sentence_tokenization,
+                    tokenize.sent_tokenize,
                 ],
                 top_n=top_n,
             ),
@@ -100,7 +100,7 @@ def SwissSummarizationDataset(top_n=-1, validation=False):
                 target=train_summary,
                 source_preprocessing=[tokenize.sent_tokenize],
                 target_preprocessing=[
-                    _target_sentence_tokenization,
+                    tokenize.sent_tokenize,
                 ],
                 top_n=top_n,
             ),
@@ -110,7 +110,7 @@ def SwissSummarizationDataset(top_n=-1, validation=False):
                 target=test_summary,
                 source_preprocessing=[tokenize.sent_tokenize],
                 target_preprocessing=[
-                    _target_sentence_tokenization,
+                    tokenize.sent_tokenize,
                 ],
                 top_n=top_n,
             ),

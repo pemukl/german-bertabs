@@ -192,6 +192,7 @@ class Transformer:
             )
             for step, batch in enumerate(epoch_iterator):
                 inputs = get_inputs(batch, device, self.model_name)
+                # print("Batch:", batch, "device:", device, "model_name", self.model_name)
                 outputs = self.model(**inputs)
 
                 if isinstance(outputs, tuple):
@@ -274,11 +275,11 @@ class Transformer:
                         saved_model_path = os.path.join(
                             self.cache_dir, f"{self.model_name}_step_{global_step}.pt"
                         )
-                        self.save_model(saved_model_path)
+                        self.save_model(global_step=global_step, full_name=saved_model_path)
                         if validation_function:
                             validation_log = validation_function(self)
                             logger.info(validation_log)
-                            print(validation_log)
+                            print('Global step: ', global_step, 'Validation results:', validation_log)
                 if global_step > max_steps:
                     epoch_iterator.close()
                     break
