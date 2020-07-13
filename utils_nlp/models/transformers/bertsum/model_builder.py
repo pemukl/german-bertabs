@@ -203,17 +203,11 @@ class BertSumExt(nn.Module):
 
 
 class Bert(nn.Module):
-    def __init__(self, large, temp_dir, finetune=False):
+    def __init__(self, model_name, temp_dir, finetune=False):
         super(Bert, self).__init__()
-        if large:
-            self.model = BertModel.from_pretrained(
-                "bert-large-uncased", cache_dir=temp_dir
+        self.model = BertModel.from_pretrained(
+                model_name, cache_dir=temp_dir
             )
-        else:
-            self.model = BertModel.from_pretrained(
-                "bert-base-uncased", cache_dir=temp_dir
-            )
-
         self.finetune = finetune
 
     def forward(self, x, segs, mask):
@@ -230,7 +224,7 @@ class Bert(nn.Module):
 class AbsSummarizer(nn.Module):
     def __init__(
         self,
-        large=False,
+        model_name='bert-base-german-cased',
         symbols=None,
         temp_dir="./",
         finetune_bert=True,
@@ -253,7 +247,7 @@ class AbsSummarizer(nn.Module):
         test=False,
     ):
         super(AbsSummarizer, self).__init__()
-        self.bert = Bert(large, temp_dir, finetune_bert)
+        self.bert = Bert(model_name, temp_dir, finetune_bert)
 
         if bert_from_extractive is not None:
             self.bert.model.load_state_dict(

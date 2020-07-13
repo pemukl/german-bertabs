@@ -29,7 +29,13 @@ from utils_nlp.models.transformers.bertsum.model_builder import AbsSummarizer
 from utils_nlp.models.transformers.bertsum.predictor import build_predictor
 from utils_nlp.models.transformers.common import Transformer
 
-MODEL_CLASS = {"bert-base-uncased": BertModel, "bert-base-german-cased": BertModel}
+MODEL_CLASS = {"bert-base-uncased": BertModel, 
+               "bert-base-german-cased": BertModel, 
+               "dbmdz/bert-base-german-uncased": BertModel,
+               "bert-base-german-dbmdz-cased": BertModel,
+               "bert-base-multilingual-cased": BertModel,
+               "distilbert-base-german-cased": BertModel
+              }
 
 logger = logging.getLogger(__name__)
 
@@ -137,10 +143,10 @@ class BertSumAbsProcessor:
         )
 
         self.symbols = {
-            "BOS": self.tokenizer.vocab["[unused1]"],
-            "EOS": self.tokenizer.vocab["[unused2]"],
+            "BOS": self.tokenizer.vocab["[unused1]"] if "[unused1]" in self.tokenizer.vocab else self.tokenizer.vocab["unused1"],
+            "EOS": self.tokenizer.vocab["[unused2]"] if "[unused2]" in self.tokenizer.vocab else self.tokenizer.vocab["unused1"],
             "PAD": self.tokenizer.vocab["[PAD]"],
-            "EOQ": self.tokenizer.vocab["[unused3]"],
+            "EOQ": self.tokenizer.vocab["[unused3]"] if "[unused1]" in self.tokenizer.vocab else self.tokenizer.vocab["unused1"],
         }
 
         self.sep_token = "[SEP]"
@@ -192,7 +198,7 @@ class BertSumAbsProcessor:
             only returned when train_mode is True.
         """
 
-        if model_name.split("-")[0] in ["bert"]:
+        if model_name.split("-")[0] in ["bert", "distilbert", "dbmdz/bert"]:
             if train_mode:
                 # labels must be the last
 
@@ -364,7 +370,7 @@ def validate(summarizer, validate_dataset, language='en'):
         " ".join(t).rstrip("\n") for t in shortened_dataset.get_target()
     ]
     generated_summaries = summarizer.predict(
-        shortened_dataset, num_gpus=1, batch_size=4
+        shortened_dataset, num_gpus=4, batch_size=4
     )
     assert len(generated_summaries) == len(reference_summaries)
     print("###################")
@@ -374,7 +380,7 @@ def validate(summarizer, validate_dataset, language='en'):
     rouge_score = compute_rouge_python(
         cand=generated_summaries, ref=reference_summaries, language=language
     )
-    return "rouge score: {}".format(rouge_score)
+    return rouge_score
 
 
 class BertSumAbs(Transformer):
@@ -428,6 +434,7 @@ class BertSumAbs(Transformer):
         self.max_pos_length = max_pos_length
 
         self.model = AbsSummarizer(
+            model_name=model_name,
             temp_dir=cache_dir,
             finetune_bert=finetune_bert,
             checkpoint=None,
